@@ -31,7 +31,8 @@ app.get('/prompts', async (req, res) => {
     const prompt = `Generate 3 highly creative and unique journal prompts, each on a different theme:
 1. Exploring feelings and emotions (avoid repeating the same emotion or asking the same question each time; use metaphors or unusual angles).
 2. Self-discovery (encourage deep reflection, imagination, or storytelling).
-3. Gratitude (do not ask for a list; instead, prompt the user to reflect on gratitude in a new or unexpected way, such as through a story, a memory, or a metaphor).
+3. Gratitude (do NOT ask for a list or use the word 'list'; instead, prompt the user to reflect on gratitude in a new or unexpected way, such as through a story, a memory, a metaphor, or by imagining gratitude as a character or a place).
+For example, a creative gratitude prompt: "If gratitude were a color that filled your day, where would you see it most vividly? Describe the scene."
 Do not repeat the same structure or wording as previous prompts. Send only the prompts, each on a new line, and nothing else.`;
 
     // Timeout wrapper (10s)
