@@ -21,9 +21,6 @@ const fallbackPrompts = [
   "List three small things that brought you joy this week."
 ];
 
-// Store last prompts for variability check
-let lastPrompts = [];
-
 // GET /prompts endpoint
 app.get('/prompts', async (req, res) => {
   try {
@@ -49,11 +46,7 @@ app.get('/prompts', async (req, res) => {
     // If not exactly 3, fallback
     if (prompts.length !== 3) throw new Error('AI did not return exactly 3 prompts');
 
-    // Variability: all 3 prompts must be different from lastPrompts
-    if (lastPrompts.length === 3) {
-      const allDifferent = prompts.every(p => !lastPrompts.includes(p));
-      if (!allDifferent) throw new Error('Not enough variability from previous prompts');
-    }
+    // No previous prompt check; allow any valid set of 3 prompts
 
     lastPrompts = prompts;
     res.status(200).send(prompts.join('\n'));
