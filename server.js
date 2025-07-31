@@ -32,7 +32,7 @@ app.get('/prompts', async (req, res) => {
 1. Exploring feelings and emotions (ask the user to reflect on a specific feeling or emotion, an event that triggered a type of emotion, or how the user deals with certain emotions).
 2. Self-discovery (encourage honest self-reflection or personal growth, allow the user to explain these parts of themselves in clear terms).
 3. Gratitude (prompt the user to reflect on gratitude in a real-life context, such as through a specific event or memory, but do not use figurative or poetic language).
-Avoid metaphors, analogies, or poetic language. Send only the prompts, each on a new line, and nothing else.`;
+Avoid metaphors, analogies, or poetic language. Send only the numbered prompts, each on a new line, and nothing else.`;
 
     // Timeout wrapper (10s)
     const aiPromise = model.generateContent(prompt);
