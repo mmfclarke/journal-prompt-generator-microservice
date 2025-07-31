@@ -29,7 +29,7 @@ app.get('/prompts', async (req, res) => {
   try {
     console.log('Generating journal prompts...');
     const prompt = `Generate 3 practical and straightforward journal prompts, each on a different theme:
-1. Exploring feelings and emotions (ask the user to reflect on a specific feeling or emotion, an event that triggered a type of emotion, or how the user deals with certain emotions).
+1. Exploring feelings and emotions (choose a different emotion each time, such as joy, sadness, surprise, fear, pride, anger, or calm; use a different emotion every time; ask the user to reflect on a specific feeling or emotion, an event that triggered a type of emotion, or how the user deals with certain emotions).
 2. Self-discovery (encourage honest self-reflection or personal growth, allow the user to explain these parts of themselves in clear terms).
 3. Gratitude (prompt the user to reflect on gratitude in a real-life context, such as through a specific event or memory, but do not use figurative or poetic language).
 Avoid metaphors, analogies, or poetic language. Send only the numbered prompts, each on a new line, and nothing else.`;
