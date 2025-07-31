@@ -29,10 +29,10 @@ app.get('/prompts', async (req, res) => {
   try {
     console.log('Generating journal prompts...');
     const prompt = `Generate 3 highly creative and unique journal prompts, each on a different theme:
-1. Exploring feelings and emotions (avoid repeating the same emotion or asking the same question each time;).
-2. Self-discovery (avoid asking the same question each time; encourage deep reflection, imagination, or storytelling).
-3. Gratitude (avoid asking the same question each time; prompt the user to reflect on gratitude in a new or unexpected way, such as through a story, a memory, or a metaphor).
-Do not repeat the same structure or wording as previous prompts. Send only the prompts, each on a new line, and nothing else.`;
+1. Exploring feelings and emotions (prompt the user to explore a specific feeling or emotion, an event that triggered a type of emotion, or how the user deals with a certain emotions; you may also ask the user to describe a feeling they are currently experiencing and to explain it).
+2. Self-discovery (encourage deep reflection, imagination, or storytelling, allow the user to explain these parts of themselves in various ways).
+3. Gratitude (prompt the user to reflect on gratitude in a new or unexpected way, such as through a story, or a memory).
+DO NOT repeat the same structure or wording as previous prompts. Send only the prompts, each on a new line, and nothing else.`;
 
     // Timeout wrapper (10s)
     const aiPromise = model.generateContent(prompt);
