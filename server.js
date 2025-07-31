@@ -29,10 +29,9 @@ app.get('/prompts', async (req, res) => {
   try {
     console.log('Generating journal prompts...');
     const prompt = `Generate 3 highly creative and unique journal prompts, each on a different theme:
-1. Exploring feelings and emotions (avoid repeating the same emotion or asking the same question each time; use metaphors or unusual angles).
-2. Self-discovery (encourage deep reflection, imagination, or storytelling).
-3. Gratitude (do NOT ask for a list or use the word 'list'; instead, prompt the user to reflect on gratitude in a new or unexpected way, such as through a story, a memory, a metaphor, or by imagining gratitude as a character or a place).
-For example, a creative gratitude prompt: "If gratitude were a color that filled your day, where would you see it most vividly? Describe the scene."
+1. Exploring feelings and emotions (avoid repeating the same emotion or asking the same question each time;).
+2. Self-discovery (avoid asking the same question each time; encourage deep reflection, imagination, or storytelling).
+3. Gratitude (avoid asking the same question each time; prompt the user to reflect on gratitude in a new or unexpected way, such as through a story, a memory, or a metaphor).
 Do not repeat the same structure or wording as previous prompts. Send only the prompts, each on a new line, and nothing else.`;
 
     // Timeout wrapper (10s)
@@ -54,12 +53,11 @@ Do not repeat the same structure or wording as previous prompts. Send only the p
     // If not exactly 3, fallback
     if (prompts.length !== 3) throw new Error('AI did not return exactly 3 prompts');
 
-    // Variability: at least 2/3 different from lastPrompts
-    let differentCount = 3;
+    // Variability: all 3 prompts must be different from lastPrompts
     if (lastPrompts.length === 3) {
-      differentCount = prompts.filter(p => !lastPrompts.includes(p)).length;
+      const allDifferent = prompts.every(p => !lastPrompts.includes(p));
+      if (!allDifferent) throw new Error('Not enough variability from previous prompts');
     }
-    if (lastPrompts.length === 3 && differentCount < 2) throw new Error('Not enough variability from previous prompts');
 
     lastPrompts = prompts;
     res.status(200).send(prompts.join('\n'));
