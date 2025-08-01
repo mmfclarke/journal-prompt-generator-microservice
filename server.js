@@ -46,7 +46,8 @@ app.get('/prompts', async (req, res) => {
     // If not exactly 3, fallback
     if (prompts.length !== 3) throw new Error('AI did not return exactly 3 prompts');
 
-    // Similarity check: retry if >50% of non-stopword words match previous prompts
+
+    // Similarity check: retry if >70% of non-stopword words match previous prompts or any prompts in the batch are >70% similar to each other
     const stopwords = new Set(['the','and','or','a','an','of','to','in','on','at','for','with','by','is','it','as','that','this','was','were','are','be','from','but','so','if','then','than','which','who','what','when','where','how','has','have','had','do','does','did','can','could','should','would','will','just','about','into','out','up','down','over','under','again','more','most','some','such','no','nor','not','only','own','same','too','very','s','t','d','ll','m','o','re','ve','y']);
     function getWords(str) {
       return str.toLowerCase().split(/\W+/).filter(w => w && !stopwords.has(w));
@@ -62,10 +63,23 @@ app.get('/prompts', async (req, res) => {
     let retryCount = 0;
     while (lastPrompts.length === 3 && retryCount < 3) {
       let tooSimilar = false;
+      // Check similarity to previous prompts
       for (let i = 0; i < 3; i++) {
-        if (similarity(prompts[i], lastPrompts[i]) > 0.5) {
+        if (similarity(prompts[i], lastPrompts[i]) > 0.7) {
           tooSimilar = true;
           break;
+        }
+      }
+      // Check cross-prompt similarity within batch
+      if (!tooSimilar) {
+        for (let i = 0; i < 3; i++) {
+          for (let j = i + 1; j < 3; j++) {
+            if (similarity(prompts[i], prompts[j]) > 0.7) {
+              tooSimilar = true;
+              break;
+            }
+          }
+          if (tooSimilar) break;
         }
       }
       if (!tooSimilar) break;
