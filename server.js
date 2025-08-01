@@ -46,7 +46,42 @@ app.get('/prompts', async (req, res) => {
     // If not exactly 3, fallback
     if (prompts.length !== 3) throw new Error('AI did not return exactly 3 prompts');
 
-    // No previous prompt check; allow any valid set of 3 prompts
+    // Similarity check: retry if >50% of non-stopword words match previous prompts
+    const stopwords = new Set(['the','and','or','a','an','of','to','in','on','at','for','with','by','is','it','as','that','this','was','were','are','be','from','but','so','if','then','than','which','who','what','when','where','how','has','have','had','do','does','did','can','could','should','would','will','just','about','into','out','up','down','over','under','again','more','most','some','such','no','nor','not','only','own','same','too','very','s','t','d','ll','m','o','re','ve','y']);
+    function getWords(str) {
+      return str.toLowerCase().split(/\W+/).filter(w => w && !stopwords.has(w));
+    }
+    function similarity(a, b) {
+      const aWords = new Set(getWords(a));
+      const bWords = new Set(getWords(b));
+      if (aWords.size === 0 || bWords.size === 0) return 0;
+      const match = [...aWords].filter(w => bWords.has(w)).length;
+      return match / Math.max(aWords.size, bWords.size);
+    }
+
+    let retryCount = 0;
+    while (lastPrompts.length === 3 && retryCount < 3) {
+      let tooSimilar = false;
+      for (let i = 0; i < 3; i++) {
+        if (similarity(prompts[i], lastPrompts[i]) > 0.5) {
+          tooSimilar = true;
+          break;
+        }
+      }
+      if (!tooSimilar) break;
+      // Regenerate
+      retryCount++;
+      try {
+        result = await model.generateContent(prompt);
+        response = await result.response;
+        text = await response.text();
+        prompts = text.split(/\r?\n/).map(p => p.trim()).filter(Boolean);
+        prompts = [...new Set(prompts)];
+        if (prompts.length !== 3) throw new Error('AI did not return exactly 3 prompts');
+      } catch (err) {
+        break;
+      }
+    }
 
     lastPrompts = prompts;
     res.status(200).send(prompts.join('\n'));
