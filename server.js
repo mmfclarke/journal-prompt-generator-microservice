@@ -15,6 +15,7 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
 // Fallback prompts in case AI fails
+let lastPrompts = [];
 const fallbackPrompts = [
   "What emotion dominated your day today, and what might have triggered it?",
   "Describe a moment recently when you felt truly proud of yourself.",
@@ -39,7 +40,7 @@ app.get('/prompts', async (req, res) => {
       throw err;
     }
 
-    // Parse prompts: split by line, filter empty, trim, dedupe
+    // Parse prompts
     let prompts = text.split(/\r?\n/).map(p => p.trim()).filter(Boolean);
     prompts = [...new Set(prompts)];
 
